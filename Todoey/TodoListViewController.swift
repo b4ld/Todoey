@@ -10,13 +10,16 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
     
-    
+    let defaults = UserDefaults.standard
     var itemArray = ["Find Mike","Find Holand"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view, typically from a nib.
+        //set the array so appear as a defaultUser BindingOptional, dont crash the app
+        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [String]{
+            itemArray = items
+        }
     }
 
     
@@ -68,6 +71,13 @@ class TodoListViewController: UITableViewController {
             
             self.itemArray.append(textField.text ?? "NewItem")
             // use a Default string in case the of an Empty String
+            
+            
+            
+            //save updated array to defaults
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            
+            
             
             //Update/reload Data
             self.tableView.reloadData()
