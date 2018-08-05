@@ -10,7 +10,12 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
     
-    let defaults = UserDefaults.standard
+    //let defaults = UserDefaults.standard
+    
+    //NSCODER
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    
     var itemArray = [Item]()
     
     
@@ -21,18 +26,28 @@ class TodoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //NSCODER Create a path to the folder
+        //Goes to GLOBAL CONST
+        //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+        
+        print(dataFilePath)
+        //Prints the filePath
+        
         let newItem = Item()
         newItem.title = "Find Mike"
         itemArray.append(newItem)
         
         
+        //NSCODE - Load the items.plist
+        loadItems()
+        
         
         
         //set the array so appear as a defaultUser BindingOptional, dont crash the app
-        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [Item]{
-            itemArray = items
-        }
-        
+//        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [Item]{
+//            itemArray = items
+//        }
+//
         
     }
 
@@ -55,9 +70,11 @@ class TodoListViewController: UITableViewController {
         
         
         //REFACTOR --------
+        
         //TERNARY
         //value = condition ? valueIfTrue : valueIfFalse
         //cell.accessoryType = item.done == true ? .checkmark : .none
+        
         cell.accessoryType = item.done ? .checkmark : .none
 
 //        if item.done == true{
@@ -90,9 +107,24 @@ class TodoListViewController: UITableViewController {
 //        }
         
         
-        tableView.reloadData()
+        
+        //NSCODER - Usit to change de done state on .plist
+        
+//        let encoder = PropertyListEncoder()
+//
+//        do{
+//            let data = try encoder.encode(self.itemArray)
+//            try data.write(to: self.dataFilePath!)
+//        }catch{
+//            print("SelfEncoding error\(error)")
+//        }
+//
+//        tableView.reloadData()
         //the other TableView Methods update
         //Force to call data sorce
+        
+        //NSCODER Just Call
+        saveItems()
         
         
         tableView.deselectRow(at: indexPath, animated: true)
@@ -123,12 +155,28 @@ class TodoListViewController: UITableViewController {
             
             
             //save updated array to defaults
-            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            //self.defaults.set(self.itemArray, forKey: "TodoListArray")
             
+            //NSCODER
+//            let encoder = PropertyListEncoder()
+//
+//
+//            do{
+//                let data = try encoder.encode(self.itemArray)
+//                try data.write(to: self.dataFilePath!)
+//            }catch{
+//                print("SelfEncoding error\(error)")
+//            }
             
             
             //Update/reload Data
-            self.tableView.reloadData()
+//            self.tableView.reloadData()
+            
+            
+            //JustCall
+            self.saveItems()
+            
+            
         }
         
         //add textField to alert
@@ -149,6 +197,38 @@ class TodoListViewController: UITableViewController {
     }
     
     
+    //Create a Save data Method
+    func saveItems(){
+        let encoder = PropertyListEncoder()
+        
+        
+        do{
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        }catch{
+            print("SelfEncoding error\(error)")
+        }
+        
+        //Update/reload Data
+        tableView.reloadData()
+    }
+    
+    
+    //NSCODE - Load the items.plist function
+    
+    func loadItems(){
+        //Using optional binding
+        if let data = try? Data(contentsOf: dataFilePath!){
+            let decoder = PropertyListDecoder()
+            do{
+                itemArray = try decoder.decode([Item].self, from: data)
+
+            }catch{
+                print("Error decoding data \(error)")
+            }
+        }
+        
+    }
     
     
     

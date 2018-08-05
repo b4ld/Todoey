@@ -8,8 +8,12 @@
 
 import Foundation
 
-
-class Item {
+//Replace Codable
+class Item : Encodable,Decodable {
+    
+    //NSCODER
+    //Turn this class encodeble _Able to enconde his self to a .plist or JSON
+    //Cant HAve Custom ClassTypes or Custem Type
     
     var title : String = ""
     var done : Bool = false
