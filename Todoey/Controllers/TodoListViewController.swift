@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
     
@@ -14,6 +15,12 @@ class TodoListViewController: UITableViewController {
     
     //NSCODER
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    
+    //COREDATA
+    //Accesses the Appdelegate context container
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     
     
     var itemArray = [Item]()
@@ -30,12 +37,18 @@ class TodoListViewController: UITableViewController {
         //Goes to GLOBAL CONST
         //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
         
-        print(dataFilePath)
+        //print(dataFilePath)
         //Prints the filePath
         
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        itemArray.append(newItem)
+//        let newItem = Item()
+//        newItem.title = "Find Mike"
+//        itemArray.append(newItem)
+        
+        
+        
+        
+        //CODEDATA - File path where the data is located
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         
         //NSCODE - Load the items.plist
@@ -93,20 +106,15 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print(itemArray[indexPath.row])
         
-        
-        
-        
         //REFACTOR
         //Reverso wat is use to be
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+       // itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
 //        if itemArray[indexPath.row].done == false{
 //           itemArray[indexPath.row].done = true
 //        }else{
 //            itemArray[indexPath.row].done = false
 //        }
-        
-        
         
         //NSCODER - Usit to change de done state on .plist
         
@@ -123,7 +131,20 @@ class TodoListViewController: UITableViewController {
         //the other TableView Methods update
         //Force to call data sorce
         
+        
         //NSCODER Just Call
+        //saveItems()
+        
+        
+        
+        //COREDATA - DELETE
+        //CALL delete first -
+        
+        context.delete(itemArray[indexPath.row])
+        itemArray.remove(at: indexPath.row)
+        
+        //itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+     
         saveItems()
         
         
@@ -145,8 +166,10 @@ class TodoListViewController: UITableViewController {
             //Wat happen when AddButton clicked
             //print(textField.text)
             
-            let newItem = Item()
+            //COREDATA
+            let newItem = Item(context: self.context)
             newItem.title = textField.text!
+            newItem.done = false
             
             self.itemArray.append(newItem)
             //self.itemArray.append(textField.text ?? "NewItem")
@@ -199,14 +222,11 @@ class TodoListViewController: UITableViewController {
     
     //Create a Save data Method
     func saveItems(){
-        let encoder = PropertyListEncoder()
-        
         
         do{
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         }catch{
-            print("SelfEncoding error\(error)")
+            print("Content Not Saved \(error)")
         }
         
         //Update/reload Data
@@ -214,21 +234,38 @@ class TodoListViewController: UITableViewController {
     }
     
     
-    //NSCODE - Load the items.plist function
     
-    func loadItems(){
-        //Using optional binding
-        if let data = try? Data(contentsOf: dataFilePath!){
-            let decoder = PropertyListDecoder()
+    
+    
+    
+        func loadItems(){
+            let request : NSFetchRequest<Item> = Item.fetchRequest()
+            //Allwys specify the tipo of the request
             do{
-                itemArray = try decoder.decode([Item].self, from: data)
-
+                itemArray = try context.fetch(request)
             }catch{
-                print("Error decoding data \(error)")
+                print("error fetching content \(error)")
             }
+            
         }
-        
-    }
+    
+    
+    
+    
+    //NSCODE - Load the items.plist function
+//    func loadItems(){
+//        //Using optional binding
+//        if let data = try? Data(contentsOf: dataFilePath!){
+//            let decoder = PropertyListDecoder()
+//            do{
+//                itemArray = try decoder.decode([Item].self, from: data)
+//
+//            }catch{
+//                print("Error decoding data \(error)")
+//            }
+//        }
+//
+//    }
     
     
     
