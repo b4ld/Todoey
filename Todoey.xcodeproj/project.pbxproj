@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B04E0A1211E056A008E615D /* CategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B04E0A0211E056A008E615D /* CategoryTableViewController.swift */; };
 		4B7090E021128EBD005A45B0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B7090DF21128EBD005A45B0 /* Default-568h@2x.png */; };
 		4B9EB9662116887E0046A84A /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B9EB9642116887E0046A84A /* DataModel.xcdatamodeld */; };
 		4BD13157211135FE0062AA2F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD13156211135FE0062AA2F /* AppDelegate.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B04E0A0211E056A008E615D /* CategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewController.swift; sourceTree = "<group>"; };
 		4B7090DF21128EBD005A45B0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4B9EB9652116887E0046A84A /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		4BD13153211135FE0062AA2F /* Todoey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +52,7 @@
 		4B7090DC21128CA3005A45B0 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4B04E0A0211E056A008E615D /* CategoryTableViewController.swift */,
 				4BD13158211135FE0062AA2F /* TodoListViewController.swift */,
 			);
 			path = Controllers;
@@ -177,6 +180,7 @@
 				4BD13159211135FE0062AA2F /* TodoListViewController.swift in Sources */,
 				4B9EB9662116887E0046A84A /* DataModel.xcdatamodeld in Sources */,
 				4BD13157211135FE0062AA2F /* AppDelegate.swift in Sources */,
+				4B04E0A1211E056A008E615D /* CategoryTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
