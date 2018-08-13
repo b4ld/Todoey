@@ -40,21 +40,14 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-  
-        
-        
-        
+
         //CODEDATA - File path where the data is located
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
 
         //loadItems()
         //here is called with default value
-        
-        
+
         //set the array so appear as a defaultUser BindingOptional, dont crash the app
 //        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [Item]{
 //            itemArray = items
@@ -263,7 +256,7 @@ class TodoListViewController: UITableViewController {
     
     
     //Create a Save data Method
-
+        //No need
     
     
     
@@ -336,8 +329,20 @@ class TodoListViewController: UITableViewController {
 
 }
 
-//extension TodoListViewController: UISearchBarDelegate{
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+extension TodoListViewController: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+    
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
+        
+        searchBar.resignFirstResponder()
+        tableView.reloadData()
+        }
+    
+   
+    
+    
+    //COREDATA
 //        let request : NSFetchRequest<Item> = Item.fetchRequest()
 //
 //        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
@@ -351,25 +356,25 @@ class TodoListViewController: UITableViewController {
 //        request.sortDescriptors = [sortDescriptor]
 //
 //        loadItems(with: request, predicate: predicate)
-//
-//
-//
-//    }
-//    //when blank searchBar, show all the entries
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0{
-//            loadItems()
-//            //make diferent threads
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//                 //no longer selected,
-//
-//            }
-//
-//        }
-//    }
-//
-//}
+
+
+
+  
+    //when blank searchBar, show all the entries
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0{
+            loadItems()
+            //make diferent threads
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+                 //no longer selected, press "X" and desselect and keyboard goes away
+
+            }
+
+        }
+    }
+
+}
 
 
 
