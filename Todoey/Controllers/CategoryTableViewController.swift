@@ -7,30 +7,31 @@
 //
 
 import UIKit
-import CoreData
+//import CoreData
+import RealmSwift
 
 class CategoryTableViewController: UITableViewController {
+    
+    //Realm initialise
+    //can throw if resoucers are contrain-its not bad
+    let realm = try! Realm()
+    
+    
+    // add ? in the end making an optional- dont force unrrapping
+    var categoryArray : Results<Category>?
+    
     
     
     //COREDATA
     //Accesses the Appdelegate context container
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    
-    var categoryArray = [Category]()
-    
-    
-    
+    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        
-        
-    loadCat()
+        loadCat()
 
-    
-        
+  
         
     }
 
@@ -38,7 +39,10 @@ class CategoryTableViewController: UITableViewController {
     //MARK:- TableView data source Methods
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryArray.count
+        
+        //if not nil return categoryArray -- if nil return 1
+        //NIL COALESCING OPERAToR
+        return categoryArray?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -46,8 +50,8 @@ class CategoryTableViewController: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
-        
-        cell.textLabel?.text = categoryArray[indexPath.row].name
+        // NIL COAL OP
+        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Found"
         
         
         return cell
@@ -61,10 +65,15 @@ class CategoryTableViewController: UITableViewController {
     
     //SAVE METHOD
     
-    func saveCat(){
+    func save(category:Category){
         
         do{
-            try context.save()
+            //try context.save()
+            
+            //realm
+            try realm.write {
+                realm.add(category)
+            }
         }catch{
             print("Content Not Saved \(error)")
         }
@@ -75,14 +84,22 @@ class CategoryTableViewController: UITableViewController {
     
     
     //LOAD METHOD
-    func loadCat(with request:NSFetchRequest<Category> = Category.fetchRequest() ){
-       
-        do{
-            categoryArray = try context.fetch(request)
-        }catch{
-            print("Error loading Categories \(error)")
-            
-        }
+//    func loadCat(with request:NSFetchRequest<Category> = Category.fetchRequest() ){
+//
+//        do{
+//            categoryArray = try context.fetch(request)
+//        }catch{
+//            print("Error loading Categories \(error)")
+//
+//        }
+//
+//        tableView.reloadData()
+//    }
+    
+    //Realm
+    func loadCat(){
+        //Pull out all lines inside Category Item
+        categoryArray = realm.objects(Category.self)
         
         tableView.reloadData()
     }
@@ -97,7 +114,7 @@ class CategoryTableViewController: UITableViewController {
     //MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //
-        saveCat()
+        //saveCat()
         
         performSegue(withIdentifier: "goToItems", sender: self)
         
@@ -109,7 +126,7 @@ class CategoryTableViewController: UITableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow{
-            destinationVC.selectedCategory = categoryArray[indexPath.row]
+            destinationVC.selectedCategory = categoryArray?[indexPath.row]
         }
         
         
@@ -130,13 +147,16 @@ class CategoryTableViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             
             
-            let newCat = Category(context: self.context)
+            
+            //Realm
+            let newCat = Category()
+            
+            //let newCat = Category(context: self.context)
             //Adiciona novo nome
             newCat.name = textField.text!
             
-            self.categoryArray.append(newCat)
             
-            self.saveCat()
+            self.save(category: newCat)
             
         }
         

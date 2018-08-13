@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Error creating a new Realm() \(error)")
         }
         
-        
+         
         
 
         return true
