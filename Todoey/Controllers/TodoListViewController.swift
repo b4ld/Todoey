@@ -25,15 +25,13 @@ class TodoListViewController: UITableViewController {
     //REALM
     let realm = try! Realm()
     var todoItems:Results<Item>?
-    
     var selectedCategory:Category?{
         //in here - happens as soon as this var is set with a value
         didSet{
             loadItems()
         }
     }
-    
-    
+        
     //var itemArray = ["Find Mike","Find Holand"]
 
     //var itemArray : Dictionary = [String:Bool]
@@ -42,7 +40,7 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
 
         //CODEDATA - File path where the data is located
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
 
         //loadItems()
@@ -226,6 +224,9 @@ class TodoListViewController: UITableViewController {
                     let newItem = Item()
                     newItem.title = textField.text!
                     
+                    //new typeDate Prop
+                    newItem.dateCreated = Date()
+                    
                     //append to the current category
                     currentCategory.items.append(newItem)
                 }
@@ -332,8 +333,12 @@ class TodoListViewController: UITableViewController {
 extension TodoListViewController: UISearchBarDelegate{
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-    
-        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
+    //by name
+//        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "title", ascending: true)
+        
+    //By date
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        
         
         searchBar.resignFirstResponder()
         tableView.reloadData()
