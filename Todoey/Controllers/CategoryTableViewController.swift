@@ -19,12 +19,6 @@ class CategoryTableViewController: UITableViewController {
     
     // add ? in the end making an optional- dont force unrrapping
     var categoryArray : Results<Category>?
-    
-    
-    
-    //COREDATA
-    //Accesses the Appdelegate context container
-    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,30 +41,20 @@ class CategoryTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
-        // NIL COAL OP
+        //NIL COALESCING OPERAToR
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Found"
-        
         
         return cell
         
-        
-        
     }
-    
-    
+
     //MARK: - Data Manipulation Methods
     
     //SAVE METHOD
-    
     func save(category:Category){
-        
         do{
-            //try context.save()
-            
-            //realm
             try realm.write {
                 realm.add(category)
             }
@@ -82,43 +66,20 @@ class CategoryTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    
-    //LOAD METHOD
-//    func loadCat(with request:NSFetchRequest<Category> = Category.fetchRequest() ){
-//
-//        do{
-//            categoryArray = try context.fetch(request)
-//        }catch{
-//            print("Error loading Categories \(error)")
-//
-//        }
-//
-//        tableView.reloadData()
-//    }
-    
-    //Realm
+    //Load Func
     func loadCat(){
         //Pull out all lines inside Category Item
         categoryArray = realm.objects(Category.self)
         
         tableView.reloadData()
     }
-    
-    
-    
-    
-    
-    
-    
+
     
     //MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //
-        //saveCat()
-        
+        //perform Segueway
         performSegue(withIdentifier: "goToItems", sender: self)
-        
-        
+
         tableView.deselectRow(at: indexPath, animated: true)
     }
     //preparar o segue, triggred before didSelectRowAt indexpath
@@ -132,12 +93,7 @@ class CategoryTableViewController: UITableViewController {
         
     }
    
-
-   
-    
-    
-    
-    //MARK: - Add New items
+    //MARK: - Add New Category Button
     @IBAction func addCategory(_ sender: UIBarButtonItem) {
         
         var textField = UITextField()
@@ -145,16 +101,10 @@ class CategoryTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Add New Category", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
-            
-            
-            
+
             //Realm
             let newCat = Category()
-            
-            //let newCat = Category(context: self.context)
-            //Adiciona novo nome
             newCat.name = textField.text!
-            
             
             self.save(category: newCat)
             

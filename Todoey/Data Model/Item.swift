@@ -18,4 +18,5 @@ class Item : Object{
     //Relations
     var parentCategory = LinkingObjects(fromType: Category.self, property: "items")
     
+    //if we add new property, and there is a object allready created - need to delete app and restart
 }
