@@ -10,7 +10,7 @@ import UIKit
 
 import RealmSwift
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     
     let realm = try! Realm()
@@ -27,8 +27,7 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
 
         //filePath
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
+        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
 
     
@@ -40,8 +39,8 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
         if let item = todoItems?[indexPath.row]{
             cell.textLabel?.text = item.title
             
@@ -61,10 +60,7 @@ class TodoListViewController: UITableViewController {
     //MARK: - Table Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
-        
-        
-        
+ 
         //REALM
         //UPDATE the cell
         if let item = todoItems?[indexPath.row]{
@@ -78,20 +74,8 @@ class TodoListViewController: UITableViewController {
             }
            
         }
-        
-        //DELETE
-        
-//        if let item = todoItems?[indexPath.row]{
-//            do{
-//                try realm.write {
-//                      realm.delete(object: item)  <----------------
-//                }
-//
-//            }catch{
-//                print("Could not update when seleted row\(error)")
-//            }
-//
-//        }
+    
+
         
         tableView.reloadData()
         
@@ -156,8 +140,34 @@ class TodoListViewController: UITableViewController {
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
+    
+    
+//DELETE from Swipe´
+
+//override func updateModel(at: IndexPath)
+
+override func updateModel(at indexPath: IndexPath) {
+    
+    
+    if let item = todoItems?[indexPath.row]{
+        do{
+            try realm.write {
+                realm.delete(item)
+            }
+            
+        }catch{
+            print("Could not update when selected row\(error)")
+        }
+        
+    }
+}
 
 }
+
+
+
+
+
 
 extension TodoListViewController: UISearchBarDelegate{
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

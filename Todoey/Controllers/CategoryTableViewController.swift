@@ -7,10 +7,9 @@
 //
 
 import UIKit
-//import CoreData
 import RealmSwift
 
-class CategoryTableViewController: UITableViewController {
+class CategoryTableViewController: SwipeTableViewController {
     
     //Realm initialise
     //can throw if resoucers are contrain-its not bad
@@ -24,9 +23,6 @@ class CategoryTableViewController: UITableViewController {
         super.viewDidLoad()
     
         loadCat()
-
-  
-        
     }
 
     
@@ -39,12 +35,16 @@ class CategoryTableViewController: UITableViewController {
         return categoryArray?.count ?? 1
     }
     
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         //NIL COALESCING OPERAToR
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories Found"
+        
+    
+//        cell.delegate = self
         
         return cell
         
@@ -72,6 +72,26 @@ class CategoryTableViewController: UITableViewController {
         categoryArray = realm.objects(Category.self)
         
         tableView.reloadData()
+    }
+    
+    
+    //DELETE METHOD
+    override func updateModel(at indexPath: IndexPath) {
+        
+        //with this -uses all the properties of superclass
+        //without this - Only overrides and dont use any of the properties
+        super.updateModel(at: indexPath)
+        
+        
+        if let catForDeletion = self.categoryArray?[indexPath.row]{
+            do{
+                try self.realm.write {
+                    self.realm.delete(catForDeletion)
+                }
+            }catch{
+                print("Eroor deliting cat \(error)")
+            }
+        }
     }
 
     
@@ -120,10 +140,24 @@ class CategoryTableViewController: UITableViewController {
         
         present(alert, animated: true, completion: nil)
     }
-    
   
-    
-    
-    
    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
