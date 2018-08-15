@@ -12,6 +12,8 @@ import RealmSwift
 
 class TodoListViewController: SwipeTableViewController {
     
+
+    @IBOutlet weak var searchB: UISearchBar!
     
     let realm = try! Realm()
     var todoItems:Results<Item>?
@@ -30,8 +32,48 @@ class TodoListViewController: SwipeTableViewController {
         //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         tableView.separatorStyle = .none
+
+        
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        //appear before view but after view is implemented in the navigations contoller
+        
+        
+        title = selectedCategory?.name
+
+        guard let colourHex = selectedCategory?.colour else { fatalError("ColourHex Value nil")}
+        
+        
+        updateNavBar(withHexCode: colourHex)
+
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        //Just before VC is destroyd
+
+
+        updateNavBar(withHexCode: "1D9BF6")
+        
+    }
+    
+    //MARK: - NavBar setup code
+    
+    func updateNavBar(withHexCode colourHexCode:String){
+        
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not Exist")}
+        
+        guard let navBarColour = UIColor(hexString: colourHexCode) else { fatalError("navBarCoulor nil")}
+        
+        navBar.barTintColor = navBarColour
+        
+        navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+        
+        navBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
+        
+        searchB.barTintColor = navBarColour
+        
+    }
     
     //MARK: - Tableview DS Methods
     
